@@ -1,0 +1,169 @@
+							-- SECTION - I --
+
+-- Q.1)
+
+CREATE TABLE DEPT(
+DEPTNO INT(2),
+DNAME VARCHAR(15),
+LOC VARCHAR(10)
+);
+
+INSERT INTO DEPT(DEPTNO,DNAME,LOC)
+VALUES(10,'ACCOUNTING','NEW YORK');
+
+INSERT INTO DEPT(DEPTNO,DNAME,LOC)
+VALUES(20,'RESEARCH','DALLAS');
+
+INSERT INTO DEPT(DEPTNO,DNAME,LOC)
+VALUES(30,'SALES','CHICAGO');
+
+INSERT INTO DEPT(DEPTNO,DNAME,LOC)
+VALUES(40,'OPERATIONS','BOSTON');
+
+SELECT * FROM DEPT;
+
+-- ---------------------------------------------------------------------------
+
+-- Q.2)
+
+CREATE TABLE EMP(
+EMPNO INT(4),
+ENAME VARCHAR(10),
+JOB VARCHAR(9),
+HIREDATE DATE,
+SAL FLOAT(7,2),
+COMM FLOAT(7,2),
+DEPTNO INT(2)
+);
+
+INSERT INTO EMP(EMPNO,ENAME,JOB,HIREDATE,SAL,COMM,DEPTNO)
+VALUES(7839,'KING','MANAGER','1991-11-17',5000,NULL,10);
+
+INSERT INTO EMP(EMPNO,ENAME,JOB,HIREDATE,SAL,COMM,DEPTNO)
+VALUES(7698,'BLAKE','CLERK','1981-05-01',2850,NULL,30);
+
+INSERT INTO EMP(EMPNO,ENAME,JOB,HIREDATE,SAL,COMM,DEPTNO)
+VALUES(7782,'CLARK','MANAGER','1981-06-09',2450,NULL,10);
+
+INSERT INTO EMP(EMPNO,ENAME,JOB,HIREDATE,SAL,COMM,DEPTNO)
+VALUES(7566,'JONES','CLERK','1981-04-02',2975,NULL,20);
+
+INSERT INTO EMP(EMPNO,ENAME,JOB,HIREDATE,SAL,COMM,DEPTNO)
+VALUES(7654,'MARTIN','SALESMAN','1981-09-28',1250,1400,30);
+
+INSERT INTO EMP(EMPNO,ENAME,JOB,HIREDATE,SAL,COMM,DEPTNO)
+VALUES(7499,'ALLEN','SALESMAN','1981-02-20',1600,300,30);
+
+SELECT * FROM EMP;
+
+-- ------------------------------------------------------------------
+
+-- Q.3)
+
+SELECT * FROM EMP
+WHERE SAL BETWEEN 2500 AND 5000;
+ 
+-- ------------------------------------------------------------------
+
+-- Q.4)
+
+SELECT ENAME FROM EMP 
+ORDER BY ENAME DESC;
+
+-- ------------------------------------------------------------------
+
+-- Q.5)
+
+SELECT LOWER(JOB) FROM EMP;
+
+-- ------------------------------------------------------------------
+
+-- Q.6)
+
+SELECT ENAME, LENGTH(ENAME) FROM EMP;
+
+-- ------------------------------------------------------------------
+
+-- Q.7)
+
+SELECT DEPTNO, COUNT(DEPTNO) FROM EMP
+GROUP BY DEPTNO
+ORDER BY 1;
+
+-- ------------------------------------------------------------------
+
+-- Q.8)
+
+SELECT DNAME,ENAME FROM EMP,DEPT
+WHERE DEPT.DEPTNO = EMP.DEPTNO; 
+
+-- ------------------------------------------------------------------
+
+-- Q.9)
+
+SELECT INSTR(ENAME,'AR') FROM EMP;
+
+-- ------------------------------------------------------------------
+
+-- Q.10)
+
+SELECT SAL*0.2 AS "HRA" FROM EMP;
+
+-- OR
+
+SELECT * , SAL*0.2 AS "HRA" FROM EMP;
+
+-- ------------------------------------------------------------------
+========================================================================================
+
+						-- SECTION - II --
+
+-- Q.1)
+
+CREATE TABLE TEMPP(RESULT VARCHAR(50));
+
+DELIMITER //
+CREATE PROCEDURE PROC1(STR1 VARCHAR(24),STR2 VARCHAR(24))
+BEGIN
+		IF INSTR(STR2,STR1) <> 0 THEN
+			INSERT INTO TEMPP values('string1 exists inside string2');
+		END IF;
+END; //
+DELIMITER ;
+
+CALL PROC1('DAC','CDAC');		-- string1 exists inside string2
+
+SELECT * FROM TEMPP;
+
+-- ------------------------------------------------------------------
+
+-- Q.2)
+
+DELIMITER //
+CREATE FUNCTION FUNC1(A FLOAT,B FLOAT,C FLOAT)
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+		IF (A+B > C) AND (A+C > B) AND (B+C > A) THEN 
+			RETURN TRUE;
+		ELSE 
+			RETURN FALSE;
+		END IF;
+END; //
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE `CHECK`(X FLOAT,Y FLOAT,Z FLOAT)
+BEGIN
+		IF FUNC1(X,Y,Z) THEN 
+			SELECT 'VALID TRAINGLE';
+		ELSE
+			SELECT 'INVALID TRAINGLE';
+		END IF;
+END; //
+DELIMITER ;
+
+CALL `CHECK`(10,20,30);			-- INVALID TRAINGLE --
+CALL `CHECK`(50,50,50);			-- VALID TRAINGLE --
+
+
